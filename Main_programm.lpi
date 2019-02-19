@@ -15,9 +15,6 @@
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
@@ -29,16 +26,20 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="Main_programm.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="menu.pas"/>
+        <Filename Value="Table.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Menu"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="choice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Choice"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

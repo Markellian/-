@@ -26,7 +26,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="3">
+    <Units Count="5">
       <Unit0>
         <Filename Value="Main_programm.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -40,6 +40,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Choice"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="read_file.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Read_file"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="write_file.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Write_file"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

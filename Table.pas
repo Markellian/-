@@ -4,22 +4,37 @@ unit Table;
 
 interface
 Var x,y: integer;           {координаты}
-    i,l: integer;           {переменные}{l-длина линий, указывет кол-во пустого места}
+    i,l,x0,y0: integer;     {переменные}{l-длина линий, указывет кол-во пустого места}
+                                        {x0-позиция x после процедуры}
+                                        {y0-позиция y после процедуры}
+{процедуры создания таблиц из псевдографики}
+Procedure Line_top(l,x0,y0: byte);       {верхнии линяя - шапка}
+Procedure Line_mid(l,x0,y0: byte);       {середина}
+Procedure Line_bot(l,x0,y0: byte);       {нижняя линяя}
+Procedure Wall(l,x0,y0: byte);           {боковые стенки}
+Procedure Intersection(x0,y0: byte);     {пересечение}
+Procedure Top_cover(x0,y0: byte);        {верхняя "крышка"}
+Procedure Bot_cover(x0,y0: byte);        {нижняя "крышка"}
 
-Procedure Menu;
-Procedure Line_top(l: integer);          {верхнии линяя - шапка}
-Procedure Line_mid(l: integer);          {середина}
-Procedure Line_bot(l: integer);          {нижняя линяя}
-Procedure Wall(l: integer);              {боковые стенки}
-Procedure Read_From(tex: byte);
-Procedure Write_in(tex: byte);
-Procedure Exit(tex: byte);
+Procedure Menu;                          {создание меню "чтение\запись"}
+{текст для Menu}
+  Procedure Read_From(tex: byte);        {"Чтение из файла"}
+  Procedure Write_in(tex: byte);         {"Запись в файл"}
+  Procedure Exit(tex: byte);             {"Выход"}
+
+Procedure Member;                        {создание таблицы "Члены клуба"}
+{таблица для Member}
+  Procedure Member_top;                  {Верх таблицы}
+  Procedure Member_wall;                 {Строки легенды таблицы}
+  Procedure Member_bot;                  {Низ таблицы}
+  Procedure Member_line;
+  Procedure Member_legend;
 
 implementation
 uses
   Classes, SysUtils, crt;
 
-Procedure Line_top(l: integer);   {надо указать начальные координаты. конец на новой строке}
+Procedure Line_top(l,x0,y0: byte);   {надо заранее указать начальные координаты. конец задается 2 и 3-й переменными}
   begin
     Gotoxy(x,y);
     Write(#201);
@@ -31,10 +46,10 @@ Procedure Line_top(l: integer);   {надо указать начальные координаты. конец на н
       end;
     Gotoxy(x+1,y);
     Write(#187);
-    x:=40;
-    y:=y+1;
+    x:=x0;
+    y:=y0;
   end;
-Procedure Line_mid(l: integer);   {надо указать начальные координаты. конец на новой строке}
+Procedure Line_mid(l,x0,y0: byte);   {надо заранее указать начальные координаты. конец задается 2 и 3-й переменными}
   begin
     Gotoxy(x,y);
     Write(#204);
@@ -46,10 +61,10 @@ Procedure Line_mid(l: integer);   {надо указать начальные координаты. конец на н
       end;
     Gotoxy(x+1,y);
     Write(#185);
-    x:=40;
-    y:=y+1;
+    x:=x0;
+    y:=y0;
   end;
-Procedure Line_bot(l: integer);   {надо указать начальные координаты. конец на новой строке}
+Procedure Line_bot(l,x0,y0: byte);   {надо заранее указать начальные координаты. конец задается 2 и 3-й переменными}
   begin
     Gotoxy(x,y);
     Write(#200);
@@ -61,34 +76,83 @@ Procedure Line_bot(l: integer);   {надо указать начальные координаты. конец на н
       end;
     Gotoxy(x+1,y);
     Write(#188);
+    x:=x0;
+    y:=y0;
   end;
-Procedure Wall(l: integer);       {надо указать начальные координаты. конец на новой строке}
+Procedure Wall(l,x0,y0: byte);       {надо заранее указать начальные координаты. конец задается 2 и 3-й переменными}
   begin
     Gotoxy(x,y);
     Write(#186);
     x:=x+l+1;
     Gotoxy(x,y);
     Write(#186);
-    x:=40;
-    y:=y+1;
+    x:=x0;
+    y:=y0;
   end;
-Procedure Read_From(tex: byte);   {Надпись "Чтение из файла" в меню}
+Procedure Intersection(x0,y0: byte); {указываются конечные координаты}
+  begin
+    Gotoxy(x,y);
+    Write(#206);
+    x:=x0;
+    y:=y0;
+  end;
+Procedure Top_cover(x0,y0: byte);    {указываются конечные координаты}
+  begin
+    Gotoxy(x,y);
+    Write(#203);
+    x:=x0;
+    y:=y0;
+  end;
+Procedure Bot_cover(x0,y0: byte);    {указываются конечные координаты}
+  begin
+    Gotoxy(x,y);
+    Write(#202);
+    x:=x0;
+    y:=y0;
+  end;
+{========================}
+Procedure Menu;
+  begin
+    x:=40;
+    y:=8;
+    Line_top(18,40,9);
+    Wall(18,40,10);
+    Line_bot(18,40,11);
+    x:=48;
+    y:=9;
+    Gotoxy(x,y);
+    Write('Меню');
+    x:=40;
+    y:=12;
+    Line_top(18,40,13);
+    Wall(18,40,14);
+    Line_mid(18,40,15);
+    Wall(18,40,16);
+    Line_mid(18,40,17);
+    Wall(18,40,18);
+    Line_bot(18,40,19);
+    Read_From(7);
+    Write_in(7);
+    Exit(7);
+  end;
+
+Procedure Read_From(tex: byte);      {указывается цвет текста}
   begin
     x:=41;
     y:=13;
     Gotoxy(x,y);
     TextColor(Tex);
-    Write('  Чтение из файла ');
+    Write('   Открыть файл');
   end;
-Procedure Write_in(tex: byte);    {Надпись "Запись в файл" в меню}
+Procedure Write_in(tex: byte);       {указывается цвет текста}
   begin
     x:=43;
     y:=15;
     Gotoxy(x,y);
     TextColor(Tex);
-    Write('Запись в файл');
+    Write(' Создать файл');
   end;
-Procedure Exit(tex: byte);        {Надпись "выход" в меню}
+Procedure Exit(tex: byte);           {указывается цвет текста}
   begin
     x:=47;
     y:=17;
@@ -96,30 +160,65 @@ Procedure Exit(tex: byte);        {Надпись "выход" в меню}
     TextColor(Tex);
     Write('Выход');
   end;
-
-Procedure Menu;
+{========================}
+Procedure Member;
   begin
-    x:=40;
-    y:=8;
-    Line_top(18);
-    Wall(18);
-    Line_bot(18);
-    x:=48;
-    y:=9;
-    Gotoxy(x,y);
-    Write('Меню');
-    x:=40;
-    y:=12;
-    Line_top(18);
-    Wall(18);
-    Line_mid(18);
-    Wall(18);
-    Line_mid(18);
-    Wall(18);
-    Line_bot(18);
-    Read_From(7);
-    Write_in(7);
-    Exit(7);
+    y:=2;
+    Gotoxy(38,2);
+    Write('ИНФОРМАЦИЯ О ВЕЛОСИПЕДИСТАХ');
+    x:=1;
+    Member_top;
+    Member_wall;
+    Member_bot;
+    Member_legend;
+    Member_top;
+    While y<>32 do Member_line;
+    Member_wall;
+    Member_bot;
+  end;
+
+Procedure Member_top;
+  begin
+    y:=y+1;
+    Line_top(98,5,y);
+    Top_cover(60,y);
+    Top_cover(91,y);
+    Top_cover(1,y);
+  end;
+Procedure Member_wall;
+  begin
+    y:=y+1;;
+    Wall(3,60,y);
+    Wall(30,91,y);
+    Wall(8,1,y);
+  end;
+Procedure Member_bot;
+  begin
+    y:=y+1;
+    Line_bot(98,5,y);
+    Bot_cover(60,y);
+    Bot_cover(91,y);
+    Bot_cover(1,y);
+  end;
+Procedure Member_line;
+  begin
+    Member_wall;
+    y:=y+1;
+    Line_mid(98,5,y);
+    Intersection(60,y);
+    Intersection(91,y);
+    Intersection(1,y);
+  end;
+Procedure Member_legend;
+  begin
+    Gotoxy(3,4);
+    Write('№');
+    Gotoxy(23,4);
+    Write('Фамилия Имя Отчество');
+    Gotoxy(69,4);
+    Write('Модель велосипеда');
+    Gotoxy(94,4);
+    Write('Стаж');
   end;
 
 end.

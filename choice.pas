@@ -6,13 +6,13 @@ unit Choice;                           {72-верх}
 interface
 Var i: integer;
 
-Procedure Cursor_first_menu;
+Function Cursor_first_menu: string;
 
 implementation
 uses
   Classes, Table, SysUtils, crt;
 
-Procedure Cursor_first_menu;
+Function Cursor_first_menu: String;
 Type S=(Read_file,Write_file,Go_out,Done);
 Var State: S;
     key: byte;
@@ -23,8 +23,12 @@ Var State: S;
                    Table.Read_from(2);
                    Repeat key:=Ord(Readkey) until (key=80)or(key=13);    {верх, ввод}
                    If key=80 then State:=Write_file;
-                   If key=13 then State:=Done;
                    Table.Read_from(7);
+                   If key=13 then
+                     begin
+                       State:=Done;
+                       Result:='ReadFile';
+                     end;
                  end;
       Write_file: begin
                     Table.Write_in(2);

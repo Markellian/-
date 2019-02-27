@@ -1,5 +1,5 @@
-unit Table;
-
+unit Table;                      {размер консоли: 100*35} {шрифт ТОЧЕЧНЫЙ}
+                                 {кодировка CP-866}
 {$mode objfpc}{$H+}
 
 interface
@@ -15,6 +15,7 @@ Procedure Wall(l,x0,y0: byte);           {боковые стенки}
 Procedure Intersection(x0,y0: byte);     {пересечение}
 Procedure Top_cover(x0,y0: byte);        {верхняя "крышка"}
 Procedure Bot_cover(x0,y0: byte);        {нижняя "крышка"}
+Procedure Insruction;                    {инструкция внизу консоли}
 
 Procedure Menu;                          {создание меню "чтение\запись"}
 {текст для Menu}
@@ -27,8 +28,8 @@ Procedure Member;                        {создание таблицы "Члены клуба"}
   Procedure Member_top;                  {Верх таблицы}
   Procedure Member_wall;                 {Строки легенды таблицы}
   Procedure Member_bot;                  {Низ таблицы}
-  Procedure Member_line;
-  Procedure Member_legend;
+  Procedure Member_line;                 {Строки таблицы данных}
+  Procedure Member_legend;               {легенда таблицы}
 
 implementation
 uses
@@ -110,6 +111,16 @@ Procedure Bot_cover(x0,y0: byte);    {указываются конечные координаты}
     x:=x0;
     y:=y0;
   end;
+Procedure Insruction;
+  begin
+    Gotoxy(1,35);
+    Write('Управление - стрелочки');
+    Gotoxy(44,35);
+    Write('Выбор - Enter');
+    Gotoxy(91,35);
+    Write('Назад-Esc');
+  end;
+
 {========================}
 Procedure Menu;
   begin
@@ -131,6 +142,7 @@ Procedure Menu;
     Line_mid(18,40,17);
     Wall(18,40,18);
     Line_bot(18,40,19);
+    Insruction;
     Read_From(7);
     Write_in(7);
     Exit(7);
@@ -167,14 +179,15 @@ Procedure Member;
     Gotoxy(38,2);
     Write('ИНФОРМАЦИЯ О ВЕЛОСИПЕДИСТАХ');
     x:=1;
-    Member_top;
+    Member_top;                        {верхняя строка для легенды}
     Member_wall;
     Member_bot;
     Member_legend;
-    Member_top;
+    Member_top;                        {таблица для данных}
     While y<>32 do Member_line;
     Member_wall;
     Member_bot;
+    Insruction;
   end;
 
 Procedure Member_top;

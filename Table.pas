@@ -13,8 +13,6 @@ Procedure Line_mid(l,x0,y0: byte);       {середина}
 Procedure Line_bot(l,x0,y0: byte);       {нижняя линяя}
 Procedure Wall(l,x0,y0: byte);           {боковые стенки}
 Procedure Intersection(x0,y0: byte);     {пересечение}
-Procedure Top_cover(x0,y0: byte);        {верхняя "крышка"}
-Procedure Bot_cover(x0,y0: byte);        {нижняя "крышка"}
 Procedure Insruction;                    {инструкция внизу консоли}
 
 Procedure Menu;                          {создание меню "чтение\запись"}
@@ -31,6 +29,14 @@ Procedure Member;                        {создание таблицы "Члены клуба"}
   Procedure Member_line;                 {Строки таблицы данных}
   Procedure Member_legend;               {легенда таблицы}
 
+{Ошибки заполнения}
+  Procedure Mistake_biker(x: byte; text: string);          {неверный формат заполнения таблицы Велосипедист}
+
+Procedure Not_Saved;
+Procedure Clear_First_line(back_color: byte);   {Очищение первой строки после информации об ошибках}
+{Сохранить файл}
+Procedure Save_Window;
+Procedure Choose_open_file_Window;
 implementation
 uses
   Classes, SysUtils, crt;
@@ -150,19 +156,19 @@ Procedure Menu;
 
 Procedure Read_From(tex: byte);      {указывается цвет текста}
   begin
-    x:=41;
+    x:=44;
     y:=13;
     Gotoxy(x,y);
     TextColor(Tex);
-    Write('   Открыть файл');
+    Write('Открыть файл');
   end;
 Procedure Write_in(tex: byte);       {указывается цвет текста}
   begin
-    x:=43;
+    x:=44;
     y:=15;
     Gotoxy(x,y);
     TextColor(Tex);
-    Write(' Создать файл');
+    Write('Создать файл');
   end;
 Procedure Exit(tex: byte);           {указывается цвет текста}
   begin
@@ -232,6 +238,70 @@ Procedure Member_legend;
     Write('Модель велосипеда');
     Gotoxy(94,4);
     Write('Стаж');
+  end;
+{========================}
+Procedure Mistake_biker(x: byte; text: string);
+  begin
+    TextColor(4);
+    TextBackGround(0);
+    Gotoxy(x,1);
+    Write(text);
+    TextColor(7);
+    TextBackGround(2);
+  end;
+
+Procedure Not_Saved;
+  begin
+    Clear_First_line(0);
+    TextColor(4);
+    Gotoxy(24,1);
+    Write('Поля были заполнены не полность. Изменения НЕ были сохранены');
+    TextColor(7);
+  end;
+Procedure Clear_First_line(back_color: byte);
+  begin
+    TextBackGround(0);
+    For i:=1 to 100 do
+      begin
+        Gotoxy(i,1);
+        Write(' ');
+      end;
+    Textbackground(back_color);
+  end;
+{========================}
+Procedure Save_Window;
+  begin
+    x:=34;
+    y:=14;
+    Line_Top(32,34,15);
+    For i:=15 to 19 do Wall(32,34,i);
+    Line_Bot(32,100,25);
+    For y:=15 to 18 do
+      For x:=35 to 66 do
+        begin
+          Gotoxy(x,y);
+          Write(' ');
+        end;
+    TextColor(3);
+    Gotoxy(36,15);
+    Write('Укажите имя сохраняемого файла');
+    TextColor(7);
+    Gotoxy(35,18);
+    Write('Esc-отмена            Enter-ввод');
+  end;
+Procedure Choose_open_file_Window;              {33-66,12}
+  begin
+    x:=33;
+    y:=12;
+    Line_Top(33,33,13);
+    For y:=13 to 25 do Wall(33,33,y);
+    Line_bot(33,33,26);
+    For y:=13 to 24 do
+      For x:=34 to 65 do
+        begin
+          Gotoxy(x,y);
+          Write(' ');
+        end;
   end;
 
 end.

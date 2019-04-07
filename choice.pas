@@ -1,16 +1,13 @@
-unit Choice;                           {72-верх}
-                                       {80-вниз}
+unit Choice;                           {72-верх}   {37-влево}
+                                       {80-вниз}   {39-вправо}
                                        {13-Enter}
 {$mode objfpc}{$H+}                    {27-Esc}
 
 interface
-Var i: integer;
+Var i: byte;
 
 Function Cursor_first_menu: string;            {выбор пункта в таблице "Menu"}
-
-Function Cursor_Biker: string;                 {указатель выбранной строки в таблице "Member"}
-Procedure Cursor_Biker_line(y,color: byte);    {подсветка строк}
-
+Function Choose_open_file: string;             {выбор файла для открытия}
 
 implementation
 uses
@@ -27,12 +24,12 @@ Var State: S;
                    Table.Read_from(2);
                    key:=Ord(Readkey);
                    If key=80 then State:=Write_file;
-                   Table.Read_from(7);
                    If key=13 then
                      begin
                        State:=Done;
                        Result:='ReadFile';
                      end;
+                   Table.Read_from(7);
                  end;
       Write_file: begin
                     Table.Write_in(2);
@@ -43,7 +40,7 @@ Var State: S;
                     If key=13 then
                       begin
                         State:=Done;
-                        Result:='Write_file';
+                        Result:='WriteFile';
                       end;
                   end;
       Go_out: begin
@@ -55,50 +52,69 @@ Var State: S;
                     State:=Done;
                     Result:='Done';
                   end;
+                Table.Exit(7);
               end;
       end until State=Done;
   end;
-Procedure Cursor_Biker_line(y,color: byte);
+Function Choose_open_file: string;
+  Var f: text;
+      m: array [byte] of string;
+      key: char;
+  Procedure Choosed_file(W: char);
+     begin
+       TextColor(3);
+       If w='u' then
+         begin
+           Gotoxy(34,y+1);
+           Write(m[y-12]);
+         end;
+       If w='d' then
+         begin
+           Gotoxy(34,y-1);
+           Write(m[y-14]);
+         end;
+       TextColor(2);
+       Gotoxy(34,y);
+       Write(m[y-13]);
+     end;
   begin
-    For i:=2 to 99 do
+    Table.Choose_open_file_Window;
+    Gotoxy(42,13);
+    TextColor(3);
+    Write('Выберите имя файла');
+    AssignFile(f,'All_Files.txt');
+    Reset(f);
+    i:=0;
+    While not EoF(f) do
       begin
-        Gotoxy(i,y);
-        Textbackground(color);
-        Write(' ');
+        i+=1;
+        Readln(f,m[i]);
       end;
-    Gotoxy(5,y);
-    Write(#186);
-    Gotoxy(60,y);
-    Write(#186);
-    Gotoxy(91,y);
-    Write(#186);
-  end;
-Function Cursor_Biker: string;
-Var Step: byte;
-  begin
-    y:=7;
+    For i:=1 to 10 do begin
+      Gotoxy(34,13+i);
+      Write(m[i]);
+      end;
+    y:=14;
+    Choosed_file('n');
     Repeat
       begin
-        Cursor_Biker_line(y,2);
-        Step:=Ord(ReadKey);
-        If (Step=72)and(y<> 7) then
+        key:=ReadKey;
+        If (key=#72)and(y<>14) then
           begin
-            Cursor_Biker_line(y,0);
-            y-=2;
+            y-=1;
+            Choosed_file('u');
           end;
-        If (Step=80)and(y<>33) then
+        If (key=#80)and(m[y-12]<>'') then
           begin
-            Cursor_Biker_line(y,0);
-            y+=2;
+            y+=1;
+            Choosed_file('d');
           end;
-        If Step=13 then
-          begin
-            Cursor_Biker_line(y,0);
-            Biker.Write_Biker(y);
-          end;
-        If Step=27 then Result:='First_Menu';
-      end
-    until (Step=27);
+      end;
+    until (key=#27)or(key=#13);
+    If key=#27 then Result:='Cancel';
+    If key=#13 then Result:=m[y-13]+'.txt';
+    CloseFile(f);
+    TextColor(7);
   end;
 
 end.

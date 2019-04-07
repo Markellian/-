@@ -14,10 +14,10 @@ Procedure Write_info;
 
 implementation
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Read_file;
 Procedure Write_info;
 begin
-  Assign(f, 'C:\Users\nikke\OneDrive\Рабочий стол\Учеба\2.2\Моя большая програмка\test_programm');
+  Assign(f, 'test_programm');
 
 end;
 

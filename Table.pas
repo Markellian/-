@@ -19,7 +19,12 @@ Procedure Menu;                          {создание меню "чтение\запись"}
 {текст для Menu}
   Procedure Read_From(tex: byte);        {"Чтение из файла"}
   Procedure Write_in(tex: byte);         {"Запись в файл"}
+  Procedure Delete_File(tex: byte);      {"Удалить файд"}
+  Procedure Reference(tex: byte);        {"Справка"}
   Procedure Exit(tex: byte);             {"Выход"}
+
+  Procedure Table_Reference;             {Таблица для саправки}
+  Procedure Content;                     {Данные справки}
 
 Procedure Member;                        {создание таблицы "Члены клуба"}
 {таблица для Member}
@@ -35,7 +40,9 @@ Procedure Member;                        {создание таблицы "Члены клуба"}
 Procedure Not_Saved;
 Procedure Clear_First_line(back_color: byte);   {Очищение первой строки после информации об ошибках}
 {Сохранить файл}
+Procedure Window_to_Go_out;
 Procedure Save_Window;
+Procedure Not_Save_Window(a: byte);
 Procedure Choose_open_file_Window;
 implementation
 uses
@@ -129,6 +136,15 @@ Procedure Insruction;
 
 {========================}
 Procedure Menu;
+  Procedure Legend;
+    begin
+      Read_From(7);
+      Write_in(7);
+      Delete_File(7);
+      Reference(7);
+      Exit(7);
+    end;
+  var i: byte;
   begin
     x:=40;
     y:=8;
@@ -142,16 +158,17 @@ Procedure Menu;
     x:=40;
     y:=12;
     Line_top(18,40,13);
-    Wall(18,40,14);
-    Line_mid(18,40,15);
-    Wall(18,40,16);
-    Line_mid(18,40,17);
-    Wall(18,40,18);
-    Line_bot(18,40,19);
+    i:=14;
+    Repeat begin
+      Wall(18,40,i);
+      i+=1;
+      Line_mid(18,40,i);
+      i+=1;
+    end until i=22;
+    Wall(18,40,22);
+    Line_bot(18,40,23);
     Insruction;
-    Read_From(7);
-    Write_in(7);
-    Exit(7);
+    Legend;
   end;
 
 Procedure Read_From(tex: byte);      {указывается цвет текста}
@@ -170,14 +187,133 @@ Procedure Write_in(tex: byte);       {указывается цвет текста}
     TextColor(Tex);
     Write('Создать файл');
   end;
+Procedure Delete_File(tex: byte);
+  begin
+    x:=44;
+    y:=17;
+    Gotoxy(x,y);
+    TextColor(tex);
+    Write('Удалить файл');
+  end;
+Procedure Reference(tex: byte);
+  begin
+    x:=46;
+    y:=19;
+    Gotoxy(x,y);
+    TextColor(Tex);
+    Write('Справка');
+  end;
 Procedure Exit(tex: byte);           {указывается цвет текста}
   begin
     x:=47;
-    y:=17;
+    y:=21;
     Gotoxy(x,y);
     TextColor(Tex);
     Write('Выход');
   end;
+
+Procedure Table_Reference;
+  begin //Table_Reference
+    clrscr;
+    x:=20;
+    y:=5;
+    Line_top(58,20,6);
+    For i:=7 to 29 do Wall(58,20,i);
+    Line_bot(58,20,21);
+    Insruction;
+    Gotoxy(45,6);
+    Write('ИНСТРУКЦИЯ');
+  end;
+Procedure Content;
+    const x1=21;
+          x2=24;
+    Var key: char;
+        page: byte;
+    Procedure FirstPage;
+      begin
+      Gotoxy(x1,7);
+      Write('1. Для выбора пункта в меню и строки в таблицах использу-');
+      Gotoxy(x2,8);
+      Write('ются стрелочки. Для выбора/изменения выбранного Вами');
+      Gotoxy(x2,9);
+      Write('поля нажмите Enter. Для выхода из текущего этапа работы');
+      Gotoxy(x2,10);
+      Write('с элементом программы нажмите клавишу Esc.');
+      Gotoxy(x1,12);
+      Write('2. При работе с таблицей для изменения поля перейдите к');
+      Gotoxy(x2,13);
+      Write('интересующему Вас полю и нажмите Enter. Последовательно');
+      Gotoxy(x2,14);
+      Write('изменяйте поля, подтверждая ввод клавишей Enter. В слу-');
+      Gotoxy(x2,15);
+      Write('чае неверного заполнения поля будет высвечиваться соот-');
+      Gotoxy(x2,16);
+      Write('ветствующее сообщение с указанием типа ошибки в верхней');
+      Gotoxy(x2,17);
+      Write('строке. После заполнения всех полей одной строки вы пе-');
+      Gotoxy(x2,18);
+      Write('рейдете обратно к выбору элеметнтов таблицы. Для преж-');
+      Gotoxy(x2,19);
+      Write('девременного выхода из режима роботы с полем данных,');
+      Gotoxy(x2,20);
+      Write('нажмите Esc. В этом случае все изменения не будут сох-');
+      Gotoxy(x2,21);
+      Write('ранены. Для удаления данных из таблицы перейдите к нуж-');
+      Gotoxy(x2,22);
+      Write('ной линии и нажмите Backspace.');
+      Gotoxy(x1,24);
+      Write('3. При заполнении полей таблицы Велосипедисты, в поле Ве-');
+      Gotoxy(x2,25);
+      Write('лосипедист имеется ограничение на количество введеных');
+      Gotoxy(x2,26);
+      Write('слов: не более трех (в случае отсутствия очества после');
+      end;
+    Procedure SecondPage;
+      begin
+        Gotoxy(x2,7);
+        Write('ввода имени нужен пробел). Допустим ввод только русских');
+        Gotoxy(x2,8);
+        Write('букв, при чем заглавной может быть только первая буква');
+        Gotoxy(x2,9);
+        Write('каждого слова. Ввод трех одинаковых букв невозможен.');
+        Gotoxy(x2,10);
+        Write('Для сортировки данных по фамилии введите 1, по названию');
+        Gotoxy(x2,11);
+        Write('велосипеда -2, по стажу -3.');
+      end;
+    Procedure PrintPage(n:byte);
+      begin
+        clrscr;
+        Table_Reference;
+        Case n of
+          1: FirstPage;
+          2: SecondPage;
+          end;
+      end;
+    begin //Content
+      FirstPage;
+      Page:=1;
+      Gotoxy(48,28);
+      Write('->',page);
+      Repeat begin
+        key:=Readkey;
+        Case key of
+        #75: If page>1 then begin
+               page-=1;
+               PrintPage(page);
+               Gotoxy(48,28);
+               Write('->',page);
+             end;
+        #77: If page<2 then begin
+               page+=1;
+               PrintPage(page);
+               Gotoxy(48,28);
+               Write('<-',page);
+             end;
+        end;
+      end until key=#27;
+    end;
+
 {========================}
 Procedure Member;
   begin
@@ -269,7 +405,7 @@ Procedure Clear_First_line(back_color: byte);
     Textbackground(back_color);
   end;
 {========================}
-Procedure Save_Window;
+Procedure Window_to_Go_out;
   begin
     x:=34;
     y:=14;
@@ -282,12 +418,30 @@ Procedure Save_Window;
           Gotoxy(x,y);
           Write(' ');
         end;
+  end;
+Procedure Save_Window;
+  begin
+    Window_to_Go_out;
     TextColor(3);
     Gotoxy(36,15);
     Write('Укажите имя сохраняемого файла');
     TextColor(7);
     Gotoxy(35,18);
     Write('Esc-отмена            Enter-ввод');
+  end;
+Procedure Not_Save_Window(a: byte);
+  begin
+    Window_to_Go_out;
+    TextColor(3);
+    Gotoxy(38,15);
+    Write('Выйти без сохранения файла?');
+    Textcolor(2);
+    Gotoxy(44,17);
+    Write('Да');
+    Textcolor(7);
+    Gotoxy(52,17);
+    Write('Нет');
+    Gotoxy(100,35);
   end;
 Procedure Choose_open_file_Window;              {33-66,12}
   begin

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="11">
+      <Unit0>
+        <Filename Value="Main_programm.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <TopLine Value="23"/>
+        <CursorPos X="28" Y="40"/>
+        <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="Table.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="182"/>
+        <CursorPos X="16" Y="282"/>
+        <FoldState Value=" T3i70E8161126h"/>
+        <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="choice.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Choice"/>
+        <EditorIndex Value="2"/>
+        <CursorPos Y="194"/>
+        <FoldState Value=" T3G0,111y"/>
+        <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="Biker.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="170"/>
+        <CursorPos Y="637"/>
+        <FoldState Value=" T3i12r01215E32 p0tX2g011 pjKi546024]B2k34CJ"/>
+        <UsageCount Value="190"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="read_file.pas"/>
+        <UnitName Value="Read_file"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="3" Y="13"/>
+        <FoldState Value=" T3V0t2"/>
+        <UsageCount Value="35"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="write_file.pas"/>
+        <UnitName Value="Write_file"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="22" Y="12"/>
+        <UsageCount Value="31"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="unit1.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="5" Y="93"/>
+        <FoldState Value=" T3G0E37"/>
+        <UsageCount Value="12"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="menu.pas"/>
+        <UnitName Value="Table"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos Y="60"/>
+        <FoldState Value=" T3G0E37"/>
+        <UsageCount Value="12"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="D:\lazarus\fpc\3.0.4\source\packages\rtl-console\src\win\crt.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="100"/>
+        <UsageCount Value="2"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="Main_programm.lps"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="25"/>
+        <CursorPos X="14" Y="35"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="XML"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="project1.lps"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="28"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="XML"/>
+      </Unit10>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="628" TopLine="617"/>
+      </Position1>
+      <Position2>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="630" TopLine="617"/>
+      </Position2>
+      <Position3>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="631" TopLine="617"/>
+      </Position3>
+      <Position4>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="192" Column="101" TopLine="181"/>
+      </Position4>
+      <Position5>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="182" Column="81" TopLine="181"/>
+      </Position5>
+      <Position6>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="196" Column="74" TopLine="181"/>
+      </Position6>
+      <Position7>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="199" TopLine="181"/>
+      </Position7>
+      <Position8>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="201" TopLine="181"/>
+      </Position8>
+      <Position9>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="202" TopLine="181"/>
+      </Position9>
+      <Position10>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="205" TopLine="181"/>
+      </Position10>
+      <Position11>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="206" TopLine="181"/>
+      </Position11>
+      <Position12>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="207" TopLine="181"/>
+      </Position12>
+      <Position13>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="208" TopLine="181"/>
+      </Position13>
+      <Position14>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="210" TopLine="192"/>
+      </Position14>
+      <Position15>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="211" TopLine="193"/>
+      </Position15>
+      <Position16>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="214" TopLine="196"/>
+      </Position16>
+      <Position17>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="215" TopLine="197"/>
+      </Position17>
+      <Position18>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="216" TopLine="198"/>
+      </Position18>
+      <Position19>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="217" TopLine="199"/>
+      </Position19>
+      <Position20>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="219" TopLine="201"/>
+      </Position20>
+      <Position21>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="220" TopLine="202"/>
+      </Position21>
+      <Position22>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="223" TopLine="205"/>
+      </Position22>
+      <Position23>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="605" Column="19" TopLine="594"/>
+      </Position23>
+      <Position24>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="606" Column="26" TopLine="597"/>
+      </Position24>
+      <Position25>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="626" TopLine="621"/>
+      </Position25>
+      <Position26>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="627" TopLine="621"/>
+      </Position26>
+      <Position27>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="626" TopLine="621"/>
+      </Position27>
+      <Position28>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="606" Column="38" TopLine="598"/>
+      </Position28>
+      <Position29>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="848" Column="39" TopLine="502"/>
+      </Position29>
+      <Position30>
+        <Filename Value="Biker.pas"/>
+        <Caret Line="649" Column="5" TopLine="639"/>
+      </Position30>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode="default"/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

@@ -3,13 +3,11 @@ unit Biker;
 {$mode objfpc}{$H+}
 
   interface
-
-Procedure Write_Biker(Filik: string);                              {ГЛАВНАЯ ПРОЦЕДУРА ДЛЯ ЗАПОЛНЕНИЯ ТАБЛИЦЫ}
-
+  uses
+      Classes, SysUtils, crt, Table, Choice;
+  Procedure Write_Biker(Filik: string);
 
 implementation
-  uses
-    Classes, SysUtils, crt, Table;
 
 
 Procedure Write_Biker(Filik: string);
@@ -30,7 +28,7 @@ Procedure Write_Biker(Filik: string);
              Max_lines=100;
              Spisok_of_Files='All_Files.txt';
              Standart_file='Велосипедисты';
-             Cash_File='Cash file.txt';
+             Cash_File='Последний файл.txt';
              Racshirenie='.txt';
   Var First,Now,Past: Bisycle;            {главные указатели}
       Last_Now:Bisycle;                   {для создания связи между элементами списка}
@@ -43,13 +41,12 @@ Procedure Write_Biker(Filik: string);
       State: string;                      {переменная для конечного автомата в главной процедуре}
       Step: char;
       Number_Line: byte;                  {количество линий(с данными)}
-      Eng_big,Eng_small,Figure: set of char;
+      Eng_big,Eng_small,Figure,Rus_big,Rus_small,symbol: set of char;
   Procedure Read_Biker(Open_file:string);
   var k, n: string;
       f: text;
     Procedure From_line_to_list;
     Var a: byte;
-
     begin //From_line_to_list
       i:=0;
       n:='';
@@ -77,20 +74,26 @@ Procedure Write_Biker(Filik: string);
     AssignFile(f,Open_file);
     Reset(f);
     Readln(f,k);
-    While (Number_line<100)and(k<>'') do
-      begin
-        From_line_to_list;
-        Number_line+=1;
-        Now^.el.number:=Number_line;
-        Last_Now:=Now;
-        new(Now);
-        Last_Now^.Next:=Now;
-        Now^.Last:=Last_Now;
-        Readln(f,k);
+    If Copy(k,2,3)='///' then begin
+      Number_line+=1;
+      Now^.el.number:=Number_line;
+      end
+      else begin
+        While (Number_line<100)and(k<>'') do
+          begin
+            From_line_to_list;
+            Number_line+=1;
+            Now^.el.number:=Number_line;
+            Last_Now:=Now;
+            new(Now);
+            Last_Now^.Next:=Now;
+            Now^.Last:=Last_Now;
+            Readln(f,k);
+          end;
+        Dispose(Now);
+        Now:=Last_now;
+        Now^.Next:=Nil;
       end;
-    Dispose(Now);
-    Now:=Last_now;
-    Now^.Next:=Nil;
     CloseFile(f);
   end;
   Procedure Full_alfavit;
@@ -98,6 +101,9 @@ Procedure Write_Biker(Filik: string);
       Eng_big:=['A'..'Z'];
       Eng_small:=['a'..'z'];
       Figure:=['0'..'9'];
+      Rus_big:=['А'..'Я'];
+      Rus_small:=['а'..'я'];
+      symbol:=[' ','!','@','"',',','.','/','?','\','|','#','$','%','^','&','(',')','-','_','+','='];
     end;
   Function Input: boolean;
     Var mistake: string;
@@ -586,30 +592,29 @@ Procedure Write_Biker(Filik: string);
     If y=Last_Line then LastLine else NotLastLine;
   end;
   Procedure Was_Choosed_BackSpace(Now: Bisycle);
-    Procedure Delete_Element_of_list(First,Now: Bisycle);
+    Procedure Delete_Element_of_list;
       Var Last_now: bisycle;
       begin //Delete_Element_of_list
         If First=Now
           then If First^.Next<>Nil
             then begin                         {First=Now; First^.Next<>Nil}
-              First:=Now^.Next;
-              First^.Last:=First^.Last^.Last;
-              Dispose(First^.Last^.Next);
-              First^.Last^.Next:=First;
+              First:=First^.Next;
+              Dispose(Now^.Last);
+              Now^.Last:=Nil;
               Past:=First;
               Now:=First;
-              First^.El.number:=1;
+              Now^.Last^.El.number:=0;
             end else begin                         {First=Now; First^.Next=Nil}
               Dispose(First^.Last);
               Dispose(First);
               Create_list;
-            end else If Now^.Next<>Nil
-              then begin                         {First<>Now; Now^.Next<>Nil}
+            end
+          else If Now^.Next<>Nil then begin                         {First<>Now; Now^.Next<>Nil}
                 Now^.Last^.Next:=Now^.Next;
                 Now^.Next^.Last:=Now^.Last;
                 Last_now:=now;
-                Dispose(Last_Now);
                 Now:=Now^.Last;
+                Dispose(Last_Now);
               end else begin                         {First<>Now; Now^.Next=Nil}
                 Now:=Now^.Last;
                 Dispose(Now^.Next);
@@ -617,13 +622,12 @@ Procedure Write_Biker(Filik: string);
               end;
       end;
     begin //Was_Choosed_BackSpace
-      Delete_Element_of_list(First,Now);
-      Number_line:=Now^.El.number;
-      While Now^.Next<>Nil do
+      Delete_Element_of_list;
+      Number_line-=1;
+      While Now<>Nil do
         begin
+          Now^.El.number:=Now^.Last^.El.number+1;
           Now:=Now^.Next;
-          Number_line+=1;
-          Now^.El.number:=Number_line;
         end;
       TextBackGround(0);
       clrscr;
@@ -634,34 +638,13 @@ Procedure Write_Biker(Filik: string);
     const x=35;
           max_symbol=33;
     Var m: array [byte] of char;
-      a: byte;
+        a: byte;
     Procedure BackSpase;
       begin
         a:=a-1;
         m[a]:=' ';
         Write(m[a]);
         a:=a-1;
-      end;
-    Procedure Sort;
-      Var Cash: Info;
-      begin //Sort
-        Now:=Past^.Next;
-        Repeat begin
-          If (Past^.el.FIO)>(Now^.el.Fio) then
-            begin
-              Cash.FIO:=Past^.El.FIO;
-              Cash.Bike:=Past^.El.Bike;
-              Cash.experience:=Past^.El.experience;
-              Past^.El.FIO:=Now^.El.FIO;
-              Past^.El.Bike:=Now^.El.Bike;
-              Past^.El.experience:=Now^.El.experience;
-              Now^.El.FIO:=Cash.FIO;
-              Now^.El.Bike:=Cash.Bike;
-              Now^.El.experience:=Cash.experience;
-            end;
-          Now:=Now^.Next;
-        end until Now=Nil;
-        Past:=Past^.Next;
       end;
     Procedure Write_all_lines_in_file;
       Var i: byte;
@@ -686,7 +669,7 @@ Procedure Write_Biker(Filik: string);
       begin //Write_all_lines_in_file
         k:='';
         For i:=1 to a-1 do k+=m[i];
-        If k<>'' then k:=Standart_file;
+        If k='' then k:=Standart_file;
         AssignFile(f,Spisok_of_Files);
         If Proverka then begin
           Append(f);
@@ -695,17 +678,16 @@ Procedure Write_Biker(Filik: string);
         CloseFile(f);
         k:=k+Racshirenie;
         Past:=First;
-        If Number_Line>1 then Repeat Sort until Past^.Next=Nil;
-        Now:=First^.Last;
+        Now:=First;
         AssignFile(f,k);
         Rewrite(f);
         Repeat begin
-          Now:=Now^.Next;
           Write(f,Now^.El.number,'/');
           Write(f,Now^.El.FIO,'/');
           Write(f,Now^.El.Bike,'/');
           Writeln(f,Now^.El.experience);
-        end until (Now^.Next=Nil)or(Now^.El.FIO='');
+          Now:=Now^.Next;
+        end until (Now=Nil)or(Now^.El.FIO='');
         CloseFile(f);
         State:='Done';
       end;
@@ -726,7 +708,10 @@ Procedure Write_Biker(Filik: string);
             begin
               Gotoxy(a+x,y);
               a:=a+1;
-              m[a]:=Readkey;
+              Repeat m[a]:=Readkey until (m[a] in Eng_big)or(m[a] in Eng_small)
+                                       or(m[a] in Figure)or(m[a] in Rus_big)
+                                       or(m[a] in Rus_small)or(m[a]=#8)or(m[a]=#13)
+                                       or(m[a]=#27)or(m[a] in symbol);
             end
             else Repeat m[a]:=Readkey until (m[a]=#8)or(m[a]=#13)or(m[a]=#27);
             If m[a]=#8 then
@@ -746,10 +731,13 @@ Procedure Write_Biker(Filik: string);
     Write_name_of_file;
     If m[a]=#27
       then begin
-        State:='Chose';
-        clrscr;
-        Table.Member;
-        Full_line('up');
+        If Choice.Go_out_with_out_save_file then State:='Done'
+          else begin
+             State:='Chose';
+             clrscr;
+             Table.Member;
+             Full_line('up');
+          end;
       end;
     If m[a]=#13 then Write_all_lines_in_file;
   end;
@@ -768,10 +756,54 @@ Procedure Write_Biker(Filik: string);
       Number_Line:=1;
       First^.El.number:=Number_Line;
     end;
+  Procedure Creat_Cash_file;
+    begin
+      AssignFile(f,Cash_File);
+      Rewrite(f);
+      Now:=First;
+      While (Now<>Nil)and(Now^.El.FIO<>'') do begin
+          Write(f,Now^.El.number,'/');
+          Write(f,Now^.El.FIO,'/');
+          Write(f,Now^.El.Bike,'/');
+          Writeln(f,Now^.El.experience);
+          Now:=Now^.Next;
+        end;
+      CloseFile(f);
+    end;
+  Procedure Sort(Parameter: string);   {FIO/Bike/Exp}
+    Procedure Change;
+      Var Cash: Info;
+      begin //Change
+        Cash.FIO:=Past^.El.FIO;
+        Cash.Bike:=Past^.El.Bike;
+        Cash.experience:=Past^.El.experience;
+        Past^.El.FIO:=Now^.El.FIO;
+        Past^.El.Bike:=Now^.El.Bike;
+        Past^.El.experience:=Now^.El.experience;
+        Now^.El.FIO:=Cash.FIO;
+        Now^.El.Bike:=Cash.Bike;
+        Now^.El.experience:=Cash.experience;
+      end;
+      begin //Sort
+        Past:=First;
+        While Past^.Next<>NIL do begin
+          Now:=Past^.Next;
+          Repeat begin
+            If (Parameter='FIO')and(Past^.el.FIO>Now^.el.Fio)and(Now^.el.FIO<>'') then Change;
+            IF (Parameter='Bike')and(Past^.el.Bike>Now^.el.Bike)and(Now^.el.Bike<>'') then Change;
+            If (Parameter='Exp')and(Past^.el.experience>Now^.el.experience)and(Now^.el.experience<>'') then Change;
+            Now:=Now^.Next;
+          end until Now=Nil;
+          Past:=Past^.Next;
+        end;
+        Past:=First;
+        Full_Line('up');
+      end;
 
   begin //Write_Biker
     Create_list;
     If Filik<>'New' then Read_Biker(Filik);
+    If Filik<>Cash_File then Creat_Cash_file;
     Full_alfavit;
     Past:=First;
     State:='Chose';
@@ -789,7 +821,10 @@ Procedure Write_Biker(Filik: string);
                               Write_Biker_Line;
                             end;
        {Esc}           #27: State:='Save file';
-       {BackSpace}         #8:  Was_Choosed_BackSpace(Now);
+       {BackSpace}     #8:  Was_Choosed_BackSpace(Now);
+                       '1': Sort('FIO');
+                       '2': Sort('Bike');
+                       '3': Sort('Exp');
                      end;
                end;
       'Save file': Was_Choosed_Esc(filik);

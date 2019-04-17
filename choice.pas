@@ -6,6 +6,7 @@ unit Choice;                           {72-верх}   {75-влево}
 interface
 Var i,max: byte;
 
+Function Cursor_main_menu: string;
 Function Cursor_first_menu: string;            {выбор пункта в таблице "Menu"}
 Function Choose_open_file(make: string): string;             {выбор файла для открытия}
 Function Go_out_with_out_save_file: boolean;
@@ -13,6 +14,62 @@ Function Go_out_with_out_save_file: boolean;
 implementation
 uses
   Classes, Table, SysUtils, crt;
+
+Function Cursor_main_menu: string;
+Type S=(Member_club,Arrivals,Reference,Go_out,Done);
+Var State: S;
+    key: byte;
+  begin
+    State:=Member_club;
+    Repeat case State of
+      Member_club: begin
+                     Table.Member_club(2);
+                     key:=Ord(Readkey);
+                     If key=80 then State:=Arrivals;
+                     If key=13 then
+                       begin
+                         State:=Done;
+                         Result:='First_Menu';
+                       end;
+                     Table.Member_club(7);
+                   end;
+      Arrivals: begin
+                  Ride(2);
+                  key:=Ord(Readkey);
+                  If key=80 then State:=Reference;
+                  If key=72 then State:=Member_club;
+                  If key=13 then
+                    begin
+                      State:=Done;
+                      Result:='Second_Menu';
+                    end;
+                  Ride(7);
+                   end;
+      Reference: begin
+                   Table.Reference(2);
+                   key:=ord(Readkey);
+                   If key=80 then State:=Go_out;
+                   If key=72 then State:=Arrivals;
+                   Table.Reference(7);
+                   If key=13 then
+                     begin
+                       State:=Done;
+                       Result:='Reference';
+                     end;
+                 end;
+      Go_out: begin
+                Table.Exit(4);
+                key:=Ord(Readkey);
+                If key=72 then State:=Reference;
+                If key=13 then
+                  begin
+                    State:=Done;
+                    Result:='Done';
+                  end;
+                Table.Exit(7);
+              end;
+    end until State=Done;
+  end;
 
 Function Cursor_first_menu: String;
 Type S=(Read_file,Write_file,Delete_file,Reference,Go_out,Done);
@@ -47,7 +104,7 @@ Var State: S;
       Delete_file: begin
                      Table.Delete_File(2);
                      key:=Ord(Readkey);
-                     If key=80 then State:=Reference;
+                     If key=80 then State:=Go_out;
                      If key=72 then State:=Write_file;
                      Table.Delete_file(7);
                      If key=13 then
@@ -56,26 +113,14 @@ Var State: S;
                          Result:='DeleteFile';
                        end;
                     end;
-      Reference: begin
-                   Table.Reference(2);
-                   key:=ord(Readkey);
-                   If key=80 then State:=Go_out;
-                   If key=72 then State:=Delete_file;
-                   Table.Reference(7);
-                   If key=13 then
-                     begin
-                       State:=Done;
-                       Result:='Reference';
-                     end;
-                 end;
       Go_out: begin
                 Table.Exit(4);
                 key:=Ord(Readkey);
-                If key=72 then State:=Reference;
+                If key=72 then State:=Delete_file;
                 If key=13 then
                   begin
                     State:=Done;
-                    Result:='Done';
+                    Result:='Main_Menu';
                   end;
                 Table.Exit(7);
               end;
@@ -102,7 +147,7 @@ Function Choose_open_file(make: string): string;
        Gotoxy(34,y);
        Write(m[y-13]);
      end;
-  begin
+  begin //Choose_open_file
     Table.Choose_open_file_Window;
     Gotoxy(42,13);
     TextColor(3);
@@ -118,7 +163,8 @@ Function Choose_open_file(make: string): string;
     max:=i;
     For i:=1 to 10 do begin
       Gotoxy(34,13+i);
-      If (make<>'Del')and(m[i]<>'Последний файл') then Write(m[i]);
+      If (make<>'Del')and(m[i]<>'Последний файл') then Write(m[i])
+        else If(make='Del')and(m[i]<>'Последний файл') then Write(m[i]);
       end;
     y:=14;
     Choosed_file('n');
@@ -168,7 +214,7 @@ Function Go_out_with_out_save_file: boolean;
     left:=true;
     Repeat begin
       key:=Readkey;
-      If (key=#77)and(key<>'M')and(left) then begin
+      If (key=#77)and(left) then begin
           Textcolor(7);
           Gotoxy(44,17);
           Write('Да');
@@ -178,7 +224,7 @@ Function Go_out_with_out_save_file: boolean;
           left:=false;
           Gotoxy(100,35);
         end
-        else If (key=#75)and(key<>'K')and(not left) then begin
+        else If (key=#75)and(not left) then begin
           Textcolor(2);
           Gotoxy(44,17);
           Write('Да');

@@ -5,12 +5,15 @@ unit Biker;
   interface
   uses
       Classes, SysUtils, crt, Table, Choice;
+Type Class1 = class
   Procedure Write_Biker(Filik: string);
+  end;
+
 
 implementation
 
 
-Procedure Write_Biker(Filik: string);
+Procedure Class1.Write_Biker(Filik: string);
   Type Info=record
               FIO: string;                     {”ˆ}
               Bike: string;                    { §¢ ­¨¥ ¢¥«®á¨¯¥¤ }
@@ -40,6 +43,7 @@ Procedure Write_Biker(Filik: string);
       Word: 1..3;                         {ª®«¨ç¥áâ¢® á«®¢ ¤«ï ¯®«ï ”ˆ ¨ ‚¥«®á¨¯¥¤}
       State: string;                      {¯¥à¥¬¥­­ ï ¤«ï ª®­¥ç­®£®  ¢â®¬ â  ¢ £« ¢­®© ¯à®æ¥¤ãà¥}
       Step: char;
+      misstake: boolean;
       Number_Line: byte;                  {ª®«¨ç¥áâ¢® «¨­¨©(á ¤ ­­ë¬¨)}
       Eng_big,Eng_small,Figure,Rus_big,Rus_small,symbol: set of char;
   Procedure Read_Biker(Open_file:string);
@@ -147,17 +151,15 @@ Procedure Write_Biker(Filik: string);
                   end;
       '0'..'9': begin
                   Result:=false;
-                  If (a>=5)and(m[a] in Figure)and(m[a-1] in Figure)and(m[a-2] in Figure)and(m[a-3] in Figure)and(m[a-4] in Figure)and(m[a-5] in Figure)
-                    then Mistake:='five_identical_numbers';
                 end;
       end;
     Case mistake of
-      'only_russian_letters': Mistake_biker(37,'„“‘’ˆŒ› ’‹œŠ “‘‘Šˆ… “Š‚›');
-      'max_words': Mistake_biker(32,'Š‹ˆ—…‘’‚ ‘‹‚ … Œ†…’ ›’œ ‹œ˜… ’…•');
-      'word_length': Mistake_biker(32,'„‹ˆ€ ‘‹‚€ … Œ†…’ ›’œ Œ…œ˜… ’…• “Š‚');
-      'two_identical_letters': Mistake_biker(34,'‚‚„ ’…• „ˆ€Š‚›• “Š‚ …„“‘’ˆŒ');
-      'five_identical_numbers': Mistake_biker(34,'‚‚„ ˜…‘’ˆ –ˆ” „Ÿ„ …„“‘’ˆŒ');
+      'only_russian_letters': misstake:=Mistake_biker(37,'„“‘’ˆŒ› ’‹œŠ “‘‘Šˆ… “Š‚›');
+      'max_words': misstake:=Mistake_biker(32,'Š‹ˆ—…‘’‚ ‘‹‚ … Œ†…’ ›’œ ‹œ˜… ’…•');
+      'word_length': misstake:=Mistake_biker(32,'„‹ˆ€ ‘‹‚€ … Œ†…’ ›’œ Œ…œ˜… ’…• “Š‚');
+      'two_identical_letters': misstake:=Mistake_biker(34,'‚‚„ ’…• „ˆ€Š‚›• “Š‚ …„“‘’ˆŒ');
     end;
+    TextBackGround(2);
   end;
   Procedure Backspace_input;
     begin
@@ -270,14 +272,17 @@ Procedure Write_Biker(Filik: string);
             Expirience_change(y,0,Cash.experience);
             Full_alfavit;
             Repeat begin
-              If a<55 then Gotoxy(a+6,y);
               If a<55
                 then begin
+                  Gotoxy(a+6,y);
                   a:=a+1;
                   Repeat
                     begin
                       m[a]:=Readkey;
-                      Clear_First_line(2);               {áâ¨à ­¨¥ á®®¡é¥­¨ï ®¡ ®è¨¡ª¥}
+                      If misstake then begin
+                        Clear_First_line(2);               {áâ¨à ­¨¥ á®®¡é¥­¨ï ®¡ ®è¨¡ª¥}
+                        misstake:=false;
+                      end;
                     end until Input;
                 end
                 else Repeat m[a]:=Readkey until (m[a]=#8)or(m[a]=#13)or(m[a]=#27);
@@ -341,12 +346,21 @@ Procedure Write_Biker(Filik: string);
               If a<31
                 then begin
                   a:=a+1;
-                  Repeat m[a]:=Readkey until (Input)or(m[a] in Eng_big)or(m[a] in Eng_small)or(m[a] in Figure)or(m[a]='-')or(m[a]='_');
-                  Clear_First_line(2);                          {áâ¨à ­¨¥ á®®¡é¥­¨ï ®¡ ®è¨¡ª¥}
+                  Repeat m[a]:=Readkey until (m[a] in Rus_big)or(m[a] in Rus_small)or(m[a] in Eng_big)or(m[a] in Eng_small)or(m[a] in Figure)or(m[a]='-')or(m[a]='_')or((m[a]=#8)and(a>1))or((m[a]=#13)and(a>3))or(m[a]=#27);
+                  If misstake then begin
+                        Clear_First_line(2);               {áâ¨à ­¨¥ á®®¡é¥­¨ï ®¡ ®è¨¡ª¥}
+                        misstake:=false;
+                      end;
                 end
                 else Repeat m[a]:=Readkey until (m[a]=#8)or(m[a]=#13)or(m[a]=#27);
               If (m[a]=' ')or(m[a]='-')or(m[a]='_') then Word+=1;
-              If m[a]=#8 then begin Gotoxy(a+59,y); Backspace_input; end;
+              If (m[a]=#8)and(a>1) then begin Gotoxy(a+59,y); Backspace_input; end;
+              If (a>=5)and(m[a] in Figure)and(m[a-1] in Figure)and(m[a-2] in Figure)and(m[a-3] in Figure)and(m[a-4] in Figure)and(m[a-5] in Figure)
+                  then begin
+                    a-=1;
+                    misstake:=Mistake_biker(34,'‚‚„ ˜…‘’ˆ –ˆ” „Ÿ„ …„“‘’ˆŒ');
+                    TextBackGround(2);
+                  end;
               If (a>0)and(a<31) then
                 begin
                   Gotoxy(a+60,y);
@@ -399,7 +413,10 @@ Procedure Write_Biker(Filik: string);
                 then begin
                   a:=a+1;
                   Repeat m[a]:=Readkey until ((m[a] in Figure)or((m[a]=#8)and(a>1))or(m[a]=#13)or(m[a]=#27));
-                  Clear_First_line(2);                          {áâ¨à ­¨¥ á®®¡é¥­¨ï ®¡ ®è¨¡ª¥}
+                  If misstake then begin
+                        Clear_First_line(2);               {áâ¨à ­¨¥ á®®¡é¥­¨ï ®¡ ®è¨¡ª¥}
+                        misstake:=false;
+                      end;
                 end
                 else begin Repeat  a:=4; m[a]:=Readkey until (m[a]=#8)or(m[a]=#13)or(m[a]=#27);  end;
               If m[a]=#8 then begin a:=a-1; m[a]:=' '; a:=a-1; end;
@@ -482,7 +499,7 @@ Procedure Write_Biker(Filik: string);
     begin
       y:=First_Line-2;
       Now:=Past^.Last;
-      While (Now^.Next<>Nil)and(Now^.el.number<>Past^.El.number+Number_line_on_screen) do
+      While (Now^.Next<>Nil)and(Now^.el.number<>Past^.El.number+Number_line_on_screen-1) do
         begin
           Now:=Now^.Next;
           y+=2;
@@ -515,10 +532,10 @@ Procedure Write_Biker(Filik: string);
           else If Now=First then
             begin
               While Now^.Next<>Nil do Now:=Now^.Next;
-              If Now^.El.number>Number_line
+              If Now^.El.number>Number_line_on_screen
                 then begin
                   Past:=Now;
-                  While (Past^.El.number>(Number_line-Number_line_on_screen))and(Past<>First) do Past:=Past^.Last;
+                  While (Past^.El.number>(Number_line-Number_line_on_screen+1))and(Past<>First) do Past:=Past^.Last;
                   Full_Line('down');
                 end
               else begin
@@ -548,12 +565,12 @@ Procedure Write_Biker(Filik: string);
             Past:=Past^.Next;
             Full_line('down');
          end
-         else If (Now^.Next<>Nil)and(Number_Line<Max_lines)
+         else If (Now^.Next<>Nil)and(Now^.El.number<Max_lines)
            then begin
              Past:=Past^.Next;
              Full_line('down');
            end
-           else If (Now^.Next=Nil)and(Now^.El.number<Max_lines)and(Now^.El.FIO='') then
+           else If (Now^.Next=Nil)and(Now^.El.number<=Max_lines)and(Now^.El.FIO='') then
              begin
                Past:=First;
                Full_line('up');
@@ -609,17 +626,20 @@ Procedure Write_Biker(Filik: string);
               Dispose(First);
               Create_list;
             end
-          else If Now^.Next<>Nil then begin                         {First<>Now; Now^.Next<>Nil}
-                Now^.Last^.Next:=Now^.Next;
-                Now^.Next^.Last:=Now^.Last;
-                Last_now:=now;
-                Now:=Now^.Last;
-                Dispose(Last_Now);
-              end else begin                         {First<>Now; Now^.Next=Nil}
-                Now:=Now^.Last;
-                Dispose(Now^.Next);
-                Now^.Next:=Nil;
-              end;
+          else begin
+            If Now=Past then Past:=Past^.Last;
+            If Now^.Next<>Nil then begin                         {First<>Now; Now^.Next<>Nil}
+              Now^.Last^.Next:=Now^.Next;
+              Now^.Next^.Last:=Now^.Last;
+              Last_now:=now;
+              Now:=Now^.Last;
+              Dispose(Last_Now);
+            end else begin                         {First<>Now; Now^.Next=Nil}
+              Now:=Now^.Last;
+              Dispose(Now^.Next);
+              Now^.Next:=Nil;
+            end;
+          end;
       end;
     begin //Was_Choosed_BackSpace
       Delete_Element_of_list;
@@ -679,6 +699,12 @@ Procedure Write_Biker(Filik: string);
         k:=k+Racshirenie;
         Past:=First;
         Now:=First;
+        If First^.El.FIO='' then begin
+          AssignFile(f,Cash_File);
+          Rewrite(f);
+          Writeln(f,'1///');
+          CloseFile(f);
+        end;
         AssignFile(f,k);
         Rewrite(f);
         Repeat begin

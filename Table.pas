@@ -15,7 +15,7 @@ Procedure Wall(l,x0,y0: byte);           {боковые стенки}
 Procedure Intersection(x0,y0: byte);     {пересечение}
 Procedure Insruction;                    {инструкция внизу консоли}
 
-Procedure Menu;                          {создание меню "чтение\запись"}
+Procedure Menu(that: string);                          {создание меню "чтение\запись"}
 {текст для Menu}
   Procedure Read_From(tex: byte);        {"Чтение из файла"}
   Procedure Write_in(tex: byte);         {"Запись в файл"}
@@ -35,7 +35,7 @@ Procedure Member;                        {создание таблицы "Члены клуба"}
   Procedure Member_legend;               {легенда таблицы}
 
 {Ошибки заполнения}
-  Procedure Mistake_biker(x: byte; text: string);          {неверный формат заполнения таблицы Велосипедист}
+  Function Mistake_biker(x: byte; text: string): boolean;          {неверный формат заполнения таблицы Велосипедист}
 
 Procedure Not_Saved;
 Procedure Clear_First_line(back_color: byte);   {Очищение первой строки после информации об ошибках}
@@ -44,6 +44,15 @@ Procedure Window_to_Go_out;
 Procedure Save_Window;
 Procedure Not_Save_Window(a: byte);
 Procedure Choose_open_file_Window;
+
+
+
+
+Procedure Main_menu;
+Procedure Member_club(tex: byte);
+Procedure Ride(tex: byte);
+
+
 implementation
 uses
   Classes, SysUtils, crt;
@@ -135,13 +144,12 @@ Procedure Insruction;
   end;
 
 {========================}
-Procedure Menu;
+Procedure Menu(that: string);
   Procedure Legend;
     begin
       Read_From(7);
       Write_in(7);
       Delete_File(7);
-      Reference(7);
       Exit(7);
     end;
   var i: byte;
@@ -151,10 +159,13 @@ Procedure Menu;
     Line_top(18,40,9);
     Wall(18,40,10);
     Line_bot(18,40,11);
-    x:=48;
-    y:=9;
-    Gotoxy(x,y);
-    Write('Меню');
+    If that='Member' then begin
+      Gotoxy(44,9);
+      Write('Члены клуба');
+      end else begin
+        Gotoxy(45,9);
+        Write('Покатушки');
+      end;
     x:=40;
     y:=12;
     Line_top(18,40,13);
@@ -164,9 +175,9 @@ Procedure Menu;
       i+=1;
       Line_mid(18,40,i);
       i+=1;
-    end until i=22;
-    Wall(18,40,22);
-    Line_bot(18,40,23);
+    end until i=20;
+    Wall(18,40,20);
+    Line_bot(18,40,21);
     Insruction;
     Legend;
   end;
@@ -195,19 +206,9 @@ Procedure Delete_File(tex: byte);
     TextColor(tex);
     Write('Удалить файл');
   end;
-Procedure Reference(tex: byte);
-  begin
-    x:=46;
-    y:=19;
-    Gotoxy(x,y);
-    TextColor(Tex);
-    Write('Справка');
-  end;
 Procedure Exit(tex: byte);           {указывается цвет текста}
   begin
-    x:=47;
-    y:=21;
-    Gotoxy(x,y);
+    Gotoxy(47,19);
     TextColor(Tex);
     Write('Выход');
   end;
@@ -279,7 +280,7 @@ Procedure Content;
         Gotoxy(x2,10);
         Write('Для сортировки данных по фамилии введите 1, по названию');
         Gotoxy(x2,11);
-        Write('велосипеда -2, по стажу -3.');
+        Write('велосипеда - 2, по стажу - 3.');
       end;
     Procedure PrintPage(n:byte);
       begin
@@ -376,14 +377,14 @@ Procedure Member_legend;
     Write('Стаж');
   end;
 {========================}
-Procedure Mistake_biker(x: byte; text: string);
+Function Mistake_biker(x: byte; text: string): boolean;
   begin
     TextColor(4);
     TextBackGround(0);
     Gotoxy(x,1);
     Write(text);
     TextColor(7);
-    TextBackGround(2);
+    Result:=true;
   end;
 
 Procedure Not_Saved;
@@ -457,6 +458,58 @@ Procedure Choose_open_file_Window;              {33-66,12}
           Write(' ');
         end;
   end;
+
+
+{========================}
+Procedure Main_menu;
+Var i: byte;
+  begin
+    x:=40;
+    y:=8;
+    Line_top(18,40,9);
+    Wall(18,40,10);
+    Line_bot(18,40,11);
+    Gotoxy(46,9);
+    Write('Велоклуб');
+    x:=40;
+    y:=12;
+    Line_top(18,40,13);
+    i:=14;
+    Repeat begin
+      Wall(18,40,i);
+      i+=1;
+      Line_mid(18,40,i);
+      i+=1;
+    end until i=20;
+    Wall(18,40,20);
+    Line_bot(18,40,21);
+    Member_club(7);
+    Ride(7);
+    Reference(7);
+    Exit(7);
+    Insruction;
+  end;
+Procedure Member_club(tex: byte);
+  begin
+    Gotoxy(44,13);
+    Textcolor(tex);
+    Write('Члены клуба');
+  end;
+Procedure Ride(tex:byte);
+  begin
+    Gotoxy(45,15);
+    TextColor(tex);
+    Write('Покатушки');
+  end;
+Procedure Reference(tex: byte);
+  begin
+    x:=46;
+    y:=17;
+    Gotoxy(x,y);
+    TextColor(Tex);
+    Write('Справка');
+  end;
+
 
 end.
 

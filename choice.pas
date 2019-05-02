@@ -5,16 +5,22 @@ unit Choice;                           {72-верх}   {75-влево}
 
 interface
 Var i,max: byte;
-
-Function Cursor_main_menu: string;
-Function Cursor_first_menu: string;            {выбор пункта в таблице "Menu"}
-Function Choose_open_file(make: string): string;             {выбор файла для открытия}
-Function Go_out_with_out_save_file: boolean;
+Function Enter_char: char;                     //фильтр на ввод знаковых клавишЖ стрелочки и т.д.
+Function Cursor_main_menu: string;             //выбор пунктов первого меню
+Function Cursor_first_menu: string;            //выбор пункта второго меню
+Function Choose_open_file(make,File_: string): string;             //выбор файла для открытия
+Function Go_out_with_out_save_file(File_is_or_Go_out: string): boolean;  //выход без сохранения файла. выбор да или нет
 
 implementation
 uses
   Classes, Table, SysUtils, crt;
-
+Function Enter_char: char;
+  Var c: char;
+  begin
+    c:=Readkey;
+    If c=#0 then Result:=Readkey
+      else If (c=#13)or(c=#27)or(c=#8) then Result:=c;
+  end;
 Function Cursor_main_menu: string;
 Type S=(Member_club,Arrivals,Reference,Go_out,Done);
 Var State: S;
@@ -24,7 +30,7 @@ Var State: S;
     Repeat case State of
       Member_club: begin
                      Table.Member_club(2);
-                     key:=Ord(Readkey);
+                     key:=Ord(Enter_char);
                      If key=80 then State:=Arrivals;
                      If key=13 then
                        begin
@@ -35,7 +41,7 @@ Var State: S;
                    end;
       Arrivals: begin
                   Ride(2);
-                  key:=Ord(Readkey);
+                  key:=Ord(Enter_char);
                   If key=80 then State:=Reference;
                   If key=72 then State:=Member_club;
                   If key=13 then
@@ -47,7 +53,7 @@ Var State: S;
                    end;
       Reference: begin
                    Table.Reference(2);
-                   key:=ord(Readkey);
+                   key:=ord(Enter_char);
                    If key=80 then State:=Go_out;
                    If key=72 then State:=Arrivals;
                    Table.Reference(7);
@@ -59,7 +65,7 @@ Var State: S;
                  end;
       Go_out: begin
                 Table.Exit(4);
-                key:=Ord(Readkey);
+                key:=Ord(Enter_char);
                 If key=72 then State:=Reference;
                 If key=13 then
                   begin
@@ -70,7 +76,6 @@ Var State: S;
               end;
     end until State=Done;
   end;
-
 Function Cursor_first_menu: String;
 Type S=(Read_file,Write_file,Delete_file,Reference,Go_out,Done);
 Var State: S;
@@ -80,7 +85,7 @@ Var State: S;
     Repeat case State of
       Read_file: begin
                    Table.Read_from(2);
-                   key:=Ord(Readkey);
+                   key:=Ord(Enter_char);
                    If key=80 then State:=Write_file;
                    If key=13 then
                      begin
@@ -91,7 +96,7 @@ Var State: S;
                  end;
       Write_file: begin
                     Table.Write_in(2);
-                    key:=Ord(Readkey);
+                    key:=Ord(Enter_char);
                     If key=80 then State:=Delete_file;;
                     If key=72 then State:=Read_file;
                     Table.Write_in(7);
@@ -103,7 +108,7 @@ Var State: S;
                   end;
       Delete_file: begin
                      Table.Delete_File(2);
-                     key:=Ord(Readkey);
+                     key:=Ord(Enter_char);
                      If key=80 then State:=Go_out;
                      If key=72 then State:=Write_file;
                      Table.Delete_file(7);
@@ -115,7 +120,7 @@ Var State: S;
                     end;
       Go_out: begin
                 Table.Exit(4);
-                key:=Ord(Readkey);
+                key:=Ord(Enter_char);
                 If key=72 then State:=Delete_file;
                 If key=13 then
                   begin
@@ -126,11 +131,12 @@ Var State: S;
               end;
       end until State=Done;
   end;
-Function Choose_open_file(make: string): string;
+Function Choose_open_file(make, File_:string): string;
   Var f: text;
+      f1:file;
       m: array [byte] of string;
       key: char;
-  Procedure Choosed_file(W: char);
+  Procedure Choosed_file(W: char);     //выбор названия файла
      begin
        TextColor(3);
        If w='u' then
@@ -152,8 +158,13 @@ Function Choose_open_file(make: string): string;
     Gotoxy(42,13);
     TextColor(3);
     Write('Выберите имя файла');
-    AssignFile(f,'All_Files.txt');
-    Reset(f);
+    AssignFile(f,File_);
+    if IOResult <> 0 then begin
+      writeln ('Исходный файл не найден!');
+      Result:='Cancel';
+      end
+      else begin
+        Reset(f);
     i:=0;
     While not EoF(f) do
       begin
@@ -161,16 +172,16 @@ Function Choose_open_file(make: string): string;
         Readln(f,m[i]);
       end;
     max:=i;
+    CloseFile(f);
     For i:=1 to 10 do begin
       Gotoxy(34,13+i);
-      If (make<>'Del')and(m[i]<>'Последний файл') then Write(m[i])
-        else If(make='Del')and(m[i]<>'Последний файл') then Write(m[i]);
+      Write(m[i]);
       end;
     y:=14;
     Choosed_file('n');
     Repeat
       begin
-        key:=ReadKey;
+        key:=Enter_char;
         If (key=#72)and(y<>14) then
           begin
             y-=1;
@@ -186,34 +197,35 @@ Function Choose_open_file(make: string): string;
     If key=#27 then Result:='Cancel';
     If key=#13 then
       begin
-        If (make='Del')and(m[y-13]<>'Последний файл')then
+        If (make='Del')and
+           (((m[y-13]<>'Последний файл')and(File_='All_Files.txt'))or
+           ((m[y-13]<>'Последний_файл')and(File_='All_File.txt')))then
           begin
-            CloseFile(f);
             Rewrite(f);
             While max<>0 do begin
               If m[max]<>m[y-13] then Writeln(f,m[max]);
               max-=1;
             end;
             CloseFile(f);
-            m[y-13]+='.txt';
-            AssignFile(f,m[y-13]);
-            Erase(f);
+            AssignFile(f1,m[y-13]);
+            {$I-}
+            if IOResult <> 0 then Erase(f1);
+            {$I+}
           end
-          else begin
-            Result:=m[y-13]+'.txt';
-            CloseFile(f);
-          end;
+          else Result:=m[y-13];
       end;
     TextColor(7);
+      end;
   end;
-Function Go_out_with_out_save_file: boolean;
+Function Go_out_with_out_save_file(File_is_or_Go_out: string): boolean;
   var key: char;
       left: boolean;
   begin
-    Not_Save_Window(1);
+    If File_is_or_Go_out='Go_out' then Not_Save_Window('   Выйти без сохранения файла?');
+    If File_is_or_Go_out='File_is' then Not_Save_Window('Такой файл существует. Заменить?');
     left:=true;
     Repeat begin
-      key:=Readkey;
+      key:=Enter_char;
       If (key=#77)and(left) then begin
           Textcolor(7);
           Gotoxy(44,17);
@@ -235,6 +247,7 @@ Function Go_out_with_out_save_file: boolean;
           Gotoxy(100,35)
         end;
     end until key=#13;
+    TextColor(7);
     If left then Result:=true else Result:=false;
   end;
 

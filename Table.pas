@@ -34,23 +34,28 @@ Procedure Member;                        {создание таблицы "Члены клуба"}
   Procedure Member_line;                 {Строки таблицы данных}
   Procedure Member_legend;               {легенда таблицы}
 
-{Ошибки заполнения}
-  Function Mistake_biker(x: byte; text: string): boolean;          {неверный формат заполнения таблицы Велосипедист}
+Procedure Randonnee;                     {создание таблицы "Покатушки"}
+{таблица для Покатушек}
+  Procedure Randonnee_top;
+  Procedure Randonnee_wall;
+  Procedure Randonnee_bot;
+  Procedure Randonnee_line;
+  Procedure Randonnee_legend;
 
-Procedure Not_Saved;
+{Ошибки заполнения}
+  Function Mistake_biker(x: byte; text: string): boolean;          {неверный формат заполнения таблицы}
+
+Procedure Not_Saved;                            //выриант если не сохранять
 Procedure Clear_First_line(back_color: byte);   {Очищение первой строки после информации об ошибках}
 {Сохранить файл}
-Procedure Window_to_Go_out;
-Procedure Save_Window;
-Procedure Not_Save_Window(a: byte);
-Procedure Choose_open_file_Window;
+Procedure Window;                               //рамка для выхода из таблицы
+Procedure Working_Window(text: string);                          //сожержимое рамки для выхода из таблицы
+Procedure Not_Save_Window(Ask: string);         //сожержимое рамки в случае не сохранения данных
+Procedure Choose_open_file_Window;              //выбор файла для открытия/удаления
 
-
-
-
-Procedure Main_menu;
-Procedure Member_club(tex: byte);
-Procedure Ride(tex: byte);
+Procedure Main_menu;                            //рисование первого меню
+Procedure Member_club(tex: byte);               //надпись Члены клуба
+Procedure Ride(tex: byte);                      //Надпись Покатушки
 
 
 implementation
@@ -137,8 +142,10 @@ Procedure Insruction;
   begin
     Gotoxy(1,35);
     Write('Управление - стрелочки');
-    Gotoxy(44,35);
+    Gotoxy(38,35);
     Write('Выбор - Enter');
+    Gotoxy(62,35);
+    Write('Поиск - F1');
     Gotoxy(91,35);
     Write('Назад-Esc');
   end;
@@ -377,6 +384,73 @@ Procedure Member_legend;
     Write('Стаж');
   end;
 {========================}
+Procedure Randonnee;
+  begin
+    Gotoxy(39,2);
+    Write('ИНФОРМАЦИЯ О "ПОКАТУШКАХ"');
+    x:=1;
+    y:=3;
+    Randonnee_top;
+    Randonnee_wall;
+    Randonnee_bot;
+    Randonnee_legend;
+    Randonnee_top;
+    While y<>33 do Randonnee_line;
+    Randonnee_wall;
+    Randonnee_bot;
+    Insruction;
+  end;
+
+Procedure Randonnee_top;
+  begin
+    Line_top(98,5,y);
+    Top_cover(52,y);
+    Top_cover(68,y);
+    Top_cover(84,y);
+    Top_cover(1,y+1);
+  end;
+Procedure Randonnee_wall;
+  begin
+    Wall(3,52,y);
+    Wall(15,68,y);
+    Wall(15,100,y);
+    Gotoxy(x,y);
+    Write(#186);
+    x:=1;
+    y:=y+1;
+  end;
+Procedure Randonnee_bot;
+  begin
+    Line_bot(98,5,y);
+    Bot_cover(52,y);
+    Bot_cover(68,y);
+    Bot_cover(84,y);
+    Bot_cover(1,y+1);
+  end;
+Procedure Randonnee_line;
+  begin
+    Randonnee_wall;
+    Line_mid(98,5,y);
+    Intersection(52,y);
+    Intersection(68,y);
+    Intersection(84,y);
+    Intersection(1,y+1);
+  end;
+Procedure Randonnee_legend;
+  begin
+    Gotoxy(3,4);
+    Write('№');
+    Gotoxy(20,4);
+    Write('Название "покатушек"');
+    Gotoxy(56,4);
+    Write('Дистанция');
+    Gotoxy(75,4);
+    Write('Дата');
+    Gotoxy(87,4);
+    Write('Длительность');
+  end;
+
+{========================}
 Function Mistake_biker(x: byte; text: string): boolean;
   begin
     TextColor(4);
@@ -406,7 +480,7 @@ Procedure Clear_First_line(back_color: byte);
     Textbackground(back_color);
   end;
 {========================}
-Procedure Window_to_Go_out;
+Procedure Window;
   begin
     x:=34;
     y:=14;
@@ -420,22 +494,22 @@ Procedure Window_to_Go_out;
           Write(' ');
         end;
   end;
-Procedure Save_Window;
+Procedure Working_Window(text: string);
   begin
-    Window_to_Go_out;
+    Window;
     TextColor(3);
-    Gotoxy(36,15);
-    Write('Укажите имя сохраняемого файла');
+    Gotoxy(35,15);
+    Write(text);
     TextColor(7);
     Gotoxy(35,18);
     Write('Esc-отмена            Enter-ввод');
   end;
-Procedure Not_Save_Window(a: byte);
+Procedure Not_Save_Window(Ask: string);
   begin
-    Window_to_Go_out;
+    Window;
     TextColor(3);
-    Gotoxy(38,15);
-    Write('Выйти без сохранения файла?');
+    Gotoxy(35,15);
+    Write(ask);
     Textcolor(2);
     Gotoxy(44,17);
     Write('Да');
@@ -489,6 +563,7 @@ Var i: byte;
     Exit(7);
     Insruction;
   end;
+
 Procedure Member_club(tex: byte);
   begin
     Gotoxy(44,13);
